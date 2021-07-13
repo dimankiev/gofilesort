@@ -3,11 +3,6 @@ name: Go Build Test
 on:
   push:
     branches: [ main ]
-    paths-ignore:
-      - '.github/**'
-      - 'LICENSE'
-      - 'README.md'
-      - '.gitignore'
   pull_request:
     branches: [ main ]
 
