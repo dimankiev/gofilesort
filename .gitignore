@@ -1,9 +1,18 @@
+# Exclude leftovers after development process
+# Do not include test and build folders
+test/
+build/
+
+# Exclude IDE files
+.idea/
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
+*.bin
 
 # Test binary, built with `go test -c`
 *.test
