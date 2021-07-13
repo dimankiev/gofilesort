@@ -1,4 +1,6 @@
-# Go File Sorting v1.0.0
+# Go File Sorting v1.0.1
+![Go Workflow](https://github.com/dimankiev/gofilesort/actions/workflows/go.yml/badge.svg)
+
 Program, written in golang, that sorts and group the files into categorized folders
 Skips folders, creates sorted folder and places a report (log) into it
 ## Features
