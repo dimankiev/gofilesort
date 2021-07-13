@@ -20,9 +20,11 @@ func check(err error) {
 	}
 }
 
-func fileCopy(fileName string, dest string) {
+func fileCopy(srcPath string, srcName string, destPath string) {
 	// Open a source
-	srcFile, err := os.Open(fileName)
+	srcFullPath := filepath.Join(srcPath, srcName)
+	// fmt.Printf("Source full path: %s\n", srcFullPath)
+	srcFile, err := os.Open(srcFullPath)
 	check(err)
 	defer func(srcFile *os.File) {
 		err := srcFile.Close()
@@ -30,7 +32,9 @@ func fileCopy(fileName string, dest string) {
 	}(srcFile)
 
 	// Create and open a copy
-	destFile, err := os.Create(filepath.Join(dest, fileName))
+	destFullPath := filepath.Join(destPath, srcName)
+	// fmt.Printf("Destination full path: %s\n", destFullPath)
+	destFile, err := os.Create(destFullPath)
 	check(err)
 	defer func(destFile *os.File) {
 		err := destFile.Close()
@@ -72,6 +76,75 @@ func addToReport(report *os.File, line string) {
 	check(err)
 }
 
+func sortFiles(dirName string, sortBar *progressbar.ProgressBar) (string, int, map[string]int) {
+	// Get files list
+	items, err := ioutil.ReadDir(dirName)
+	check(err)
+
+	// Create the unsorted folder, if it does not exist
+	err = os.MkdirAll(
+		filepath.Join(".", "sorted", "unsorted"),
+		os.ModePerm,
+	)
+	check(err)
+
+	// Compile regex expression for file matching (Firstname Lastname)
+	r, _ := regexp.Compile("^[\\w\\-_]+\\s[\\w\\-_]+")
+
+	// Create array for counting matches (Filename: TotalMatches)
+	matches := make(map[string]int)
+
+	// Create a variable to count total amount of processed files
+	total := 0
+
+	// Perform the copy process for every found item (except folders)
+	for _, item := range items {
+		// Process the folders
+		if item.IsDir() {
+			if item.Name() == "sorted" || item.Name() == "unsorted" || item.Name() == ".old" {
+				continue
+			} else {
+				dirPath := filepath.Join(dirName, item.Name())
+				_, dirTotal, dirMatches := sortFiles(dirPath, sortBar)
+				total += dirTotal
+				for name, count := range dirMatches {
+					matches[fmt.Sprintf("%s", filepath.Join(dirPath, name))] = count
+				}
+				continue
+			}
+		}
+		// Count total files
+		total += 1
+		// Update the progressbar
+		err := sortBar.Add(1)
+		check(err)
+		// Clarify sorted file's folder
+		match := r.FindString(item.Name())
+		// Set 'unsorted' folder as a default destination path
+		destPath := filepath.Join(".", "sorted", "unsorted")
+		if len(match) != 0 {
+			// Count current match
+			matches[match] += 1
+			// Set the corresponding folder as a destination path
+			destPath = filepath.Join(".", "sorted", match)
+			// Create the destination folder, if it does not exist
+			err = os.MkdirAll(destPath, os.ModePerm)
+			check(err)
+		} else {
+			// Count unsorted files
+			matches["Unsorted"] += 1
+		}
+		// Do the copy
+		fileCopy(dirName, item.Name(), destPath)
+	}
+
+	// Clean the memory
+	items = nil
+	r = nil
+
+	return dirName, total, matches
+}
+
 func main() {
 	// Print info about the program
 	fmt.Println("File Sorting Program v. 1.0.0")
@@ -82,16 +155,12 @@ func main() {
 	fmt.Println("  Skips folders, creates sorted folder and places a report into it")
 	fmt.Println("   - Program does copy the files into 'sorted' folder")
 	fmt.Println("   - Every copied file is located in the corresponding Firstname Lastname folder")
-	// Get files list
-	items, err := ioutil.ReadDir(".")
-	check(err)
 
-	// Create the unsorted folder, if it does not exist
-	err = os.MkdirAll(
-		filepath.Join(".", "sorted", "unsorted"),
-		os.ModePerm,
-	)
-	check(err)
+	// Instantiate a sorting progressbar
+	sortBar, _ := makeProgressBar(1, 2, "Sorting the files...", -1)
+
+	// Start file sorting
+	_, total, matches := sortFiles(".", sortBar)
 
 	// Set report filename
 	now := time.Now()
@@ -104,53 +173,6 @@ func main() {
 	f, err := os.Create(
 		filepath.Join(".", "sorted", filename),
 	)
-
-	// Compile regex expression for file matching (Firstname Lastname)
-	r, _ := regexp.Compile("^[\\w\\-_]+\\s[\\w\\-_]+")
-
-	// Create array for counting matches (Filename: TotalMatches)
-	matches := make(map[string]int)
-
-	// Create a variable to count total amount of processed files
-	total := 0
-
-	// Instantiate a sorting progressbar
-	sortBar, _ := makeProgressBar(1, 2, "Sorting the files", len(items))
-
-	// Perform the copy process for every found item (except folders)
-	for _, item := range items {
-		// Skip the folders
-		if item.IsDir() {
-			continue
-		}
-		// Count total files
-		total += 1
-		// Update the progressbar
-		err := sortBar.Add(1)
-		check(err)
-		// Clarify sorted file's folder
-		match := r.FindString(item.Name())
-		// Set 'unsorted' folder as a default destination path
-		path := filepath.Join(".", "sorted", "unsorted")
-		if len(match) != 0 {
-			// Count current match
-			matches[match] += 1
-			// Set the corresponding folder as a destination path
-			path = filepath.Join(".", "sorted", match)
-			// Create the destination folder, if it does not exist
-			err = os.MkdirAll(path, os.ModePerm)
-			check(err)
-		} else {
-			// Count unsorted files
-			matches["Unsorted"] += 1
-		}
-		// Do the copy
-		fileCopy(item.Name(), path)
-	}
-
-	// Clean the memory
-	items = nil
-	r = nil
 
 	// Instantiate a report progressbar
 	reportBar, _ := makeProgressBar(2, 2, "Generating a report", len(matches))
