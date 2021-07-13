@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/k0kubun/go-ansi"
-	"github.com/schollz/progressbar"
+	"github.com/schollz/progressbar/v3"
 	"io"
 	"io/ioutil"
 	"log"
