@@ -10,6 +10,11 @@ on:
       - '.gitignore'
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - '.github/**'
+      - 'LICENSE'
+      - 'README.md'
+      - '.gitignore'
 
 jobs:
 
