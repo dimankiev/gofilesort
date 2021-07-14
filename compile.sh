@@ -16,5 +16,5 @@ export GOARCH=amd64
 go build -o ./build/sort.linux.amd64.bin main.go
 # Link the example builds
 mkdir test
-ln -f ./build/sort.amd64.bin ./test/sort.amd64.bin
-ln -f ./build/sort.i386.bin ./test/sort.i386.bin
+ln -f ./build/sort.amd64.bin ./test/sort.linux.amd64.bin
+ln -f ./build/sort.i386.bin ./test/sort.linux.i386.bin
