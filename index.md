@@ -1,37 +1,19 @@
-## Welcome to GitHub Pages
+## About Go File Sorting Program
 
-You can use the [editor on GitHub](https://github.com/dimankiev/gofilesort/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+![Go Workflow](https://github.com/dimankiev/gofilesort/actions/workflows/go.yml/badge.svg) [![CodeQL](https://github.com/dimankiev/gofilesort/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/dimankiev/gofilesort/actions/workflows/codeql-analysis.yml) 
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Program, written in golang, that sorts and group the files into categorized folders
+Recursively sorts folders content, creates sorted folder and places a report (log) into it
+## Features
+  1. Recursively sorts folders content
+  2. Program does copy the files into `sorted` folder  
+  Every copied file is located in the corresponding `Firstname Lastname pair` folder
+  3. Get a report with exact numbers, how many files are sorted, unsorted and the total number of processed files
 
-### Markdown
+## Latest Release
+![](https://img.shields.io/github/last-commit/dimankiev/gofilesort) ![GitHub Release Date](https://img.shields.io/github/release-date/dimankiev/gofilesort?label=latest%20release) ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/dimankiev/gofilesort?label=latest%20beta%20release)
+ - [Latest Release](https://github.com/dimankiev/gofilesort/releases/latest)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/dimankiev/gofilesort/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+## Contacts
+  - Telegram (https://t.me/dimankiev)
+  - E-Mail (dimankiev@gmail.com)
